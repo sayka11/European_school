@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f;  // Скорость движения игрока
+    public float moveSpeed = 5f;       // Скорость движения игрока
+    public float jumpForce = 7f;       // Сила прыжка
+    public Transform groundCheck;      // Точка проверки земли
+    public LayerMask groundLayer;      // Слой земли
 
     private Rigidbody2D rb;
     private Vector2 moveInput;
+    private bool isGrounded;
 
     void Start()
     {
@@ -21,6 +25,15 @@ public class PlayerController : MonoBehaviour
 
         // Задаем вектор движения игрока
         moveInput = new Vector2(moveX, 0f);
+
+        // Проверка, находится ли игрок на земле
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+
+        // Прыжок при нажатии на пробел, если игрок на земле
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
+        }
     }
 
     void FixedUpdate()
